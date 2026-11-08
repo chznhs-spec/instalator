@@ -1,0 +1,51 @@
+name: build
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install pyinstaller
+      - run: python build.py
+      - name: Připravit soubor
+        shell: bash
+        run: |
+          mkdir release
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cp dist/VLCR_Stahovac_2000.exe release/VLCR_Stahovac_2000-Windows.exe
+          elif [ "$RUNNER_OS" = "macOS" ]; then
+            ditto -c -k --keepParent dist/VLCR_Stahovac_2000.app release/VLCR_Stahovac_2000-macOS.zip
+          else
+            tar -czf release/VLCR_Stahovac_2000-Linux.tar.gz -C dist VLCR_Stahovac_2000
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ runner.os }}
+          path: release/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release
+          merge-multiple: true
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ startsWith(github.ref, 'refs/tags/') && github.ref_name || format('build-{0}', github.run_number) }}
+          name: VLCR Stahovač 2000
+          files: release/*
