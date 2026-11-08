@@ -26,16 +26,16 @@ SPEED = 25.0 if os.environ.get("VLCR_FAST") else 1.0
 QUEUE_END, BAR_END, HOLD_END = 40.0, 100.0, 125.0
 TERMS_COUNTDOWN = 12.0
 
-UGLY_BG = ["#ff00ff", "#00ff00", "#ffff00", "#00ffff", "#ff8800", "#ff6699", "#99ff00", "#aa66ff"]
-UGLY_FG = ["#0000ff", "#ff0000", "#006600", "#660066", "#000000"]
-FONT_NAME = "Comic Sans MS"
+UGLY_BG = ["#fafaf8"]
+UGLY_FG = ["#000000"]
+FONT_NAME = "Times New Roman"
 
 TITLES = [
-    "Ověření lidskosti",
+    "Ověření, že nejste robot",
     "Podmínky užívání (přečtěte všechny)",
     "Povinná registrace",
     "Stahování",
-    "Dokončení (skoro)",
+    "Dokončení",
 ]
 
 CLAUSES = [
@@ -54,28 +54,13 @@ CLAUSES = [
 ]
 
 STATUS_MSGS = [
-    "Probouzím server (spí)…",
-    "Kopíruji bity jeden po druhém…",
-    "Hledám ztracený paket (naposledy viděn u routeru)…",
-    "Vyjednávám s firewallem…",
-    "Přepočítávám procenta…",
-    "Čekám, až se uklidní router…",
-    "Krmím hlodavce v serverovně…",
-    "Ručně přepisuji soubor z papíru…",
+    "Načítání..."
 ]
 HOLD_MSGS = [
-    "Ověřuji kontrolní součet kontrolního součtu…",
-    "Dokončuji dokončování…",
-    "Už jen chvilku (neříkáme jakou)…",
-    "Leštím poslední bajt…",
+    "Načítání..."
 ]
 ETA_MSGS = [
-    "Zbývá: asi 3 roky 4 měsíce",
-    "Zbývá: 12 minut (nebo 12 hodin)",
-    "Zbývá: ještě moment",
-    "Zbývá: záleží na vašem štěstí",
-    "Zbývá: –7 sekund",
-    "Zbývá: nevíme, ale držíme palce",
+    "Načítání..."
 ]
 
 
@@ -139,7 +124,7 @@ def launch_viewer(path):
 class Installer(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.title("VLCR Stahovač 2000 – Instalační Průvodce Průvodce")
+        self.title("VLCR Stahovač – Instalační Průvodce Průvodce")
         self.geometry("680x530")
         self.resizable(False, False)
         self.protocol("WM_DELETE_WINDOW", self.on_close)
@@ -164,9 +149,9 @@ class Installer(tk.Tk):
         self.body.place(x=10, y=98, width=660, height=365)
 
         btn = dict(font=(FONT_NAME, 10, "bold"), relief="ridge", bd=6)
-        self.next_btn = tk.Button(self, text="Další >>", command=self.next_click, bg="#cccccc", **btn)
-        self.back_btn = tk.Button(self, text="<< Zpět", command=self.back_click, bg="#ffcccc", **btn)
-        self.cancel_btn = tk.Button(self, text="Zrušit", command=self.cancel_click, bg="#ccccff", **btn)
+        self.next_btn = tk.Button(self, text="Další >>", command=self.next_click, bg="#ffc654", **btn)
+        self.back_btn = tk.Button(self, text="<< Zpět", command=self.back_click, bg="#ffc654", **btn)
+        self.cancel_btn = tk.Button(self, text="Zrušit", command=self.cancel_click, bg="#ffc654", **btn)
 
         self.after(300, self._poll_logo)
         self.show_step(0)
@@ -286,7 +271,7 @@ class Installer(tk.Tk):
         s = self.s
         s.update(math_ok=False, clicks=0)
         self.lbl(b, "Než začneme, musíme ověřit, že nejste robot.\n"
-                    "Roboti jsou u nás nežádoucí, protože jsou rychlí.", 11, wraplength=620).pack(pady=(6, 14))
+                    , 11, wraplength=620).pack(pady=(6, 14))
 
         self.q = [random.randint(6, 19), random.randint(3, 9), random.randint(10, 99)]
         self.q_lbl = self.lbl(b, "", 16)
@@ -295,11 +280,11 @@ class Installer(tk.Tk):
         self.ans = tk.StringVar()
         tk.Entry(b, textvariable=self.ans, font=(FONT_NAME, 14), width=8, justify="center",
                  bg="#ffffaa").pack(pady=8)
-        tk.Button(b, text="Zkontrolovat", font=(FONT_NAME, 10, "bold"), bg="#ff9999",
+        tk.Button(b, text="Zkontrolovat", font=(FONT_NAME, 10, "bold"), bg="#ffc654",
                   command=self.check_math).pack()
         self.math_status = self.lbl(b, "", 10)
         self.math_status.pack(pady=6)
-        self.robot_btn = tk.Button(b, text="Nejsem robot (0/3)", state="disabled", bg="#99ccff",
+        self.robot_btn = tk.Button(b, text="Nejsem robot (0/3)", state="disabled", bg="#ffc654",
                                    font=(FONT_NAME, 11, "bold"), relief="groove", bd=8,
                                    command=self.robot_click)
         self.robot_btn.pack(pady=14)
@@ -316,16 +301,16 @@ class Installer(tk.Tk):
             ok = False
         if ok:
             self.s["math_ok"] = True
-            self.math_status.configure(text="Správně. Matematika nelže.")
+            self.math_status.configure(text="Správně.")
             self.robot_btn.configure(state="normal")
         else:
             self.q = [random.randint(6, 19), random.randint(3, 9), random.randint(10, 99)]
             self._set_question()
             self.ans.set("")
-            self.math_status.configure(text="Špatně! Roboti by to uměli. Tady je nový příklad.")
+            self.math_status.configure(text="Ne, zkus to znovu.")
 
     def robot_click(self):
-        texts = ["Nejsem robot (1/3)", "Opravdu nejsem robot (2/3)", "Fakt jsem člověk (3/3)"]
+        texts = ["Nejsem robot (1/3)", "Nejsem robot (2/3)", "Nejsem robot (3/3)"]
         self.s["clicks"] += 1
         n = self.s["clicks"]
         if n >= 3:
@@ -388,7 +373,7 @@ class Installer(tk.Tk):
             s["cd"] = (TERMS_COUNTDOWN if s["cd"] is None else s["cd"]) - 0.2 * self.speed
             if s["cd"] <= 0:
                 done = True
-                self.cd_lbl.configure(text="Teď můžete pokračovat. Děkujeme za váš čas (už je náš).")
+                self.cd_lbl.configure(text="Teď můžete pokračovat. Děkujeme za váš čas.")
             else:
                 self.cd_lbl.configure(
                     text="Tlačítko Další se odemkne za %d s. Čtěte pozorně." % math.ceil(s["cd"]))
@@ -407,24 +392,20 @@ class Installer(tk.Tk):
         self.code = "".join(random.choice("ABCDEFGHJKLMNPQRSTUVWXYZ23456789") for _ in range(8))
         self.name_v, self.how_v, self.code_v = tk.StringVar(), tk.StringVar(), tk.StringVar()
 
-        self.lbl(b, "Vaše jméno (celé, včetně rodného jména babičky):", 10).pack(anchor="w", padx=20, pady=(4, 0))
+        self.lbl(b, "Vaše jméno", 10).pack(anchor="w", padx=20, pady=(4, 0))
         tk.Entry(b, textvariable=self.name_v, width=40, bg="#ffffaa").pack(anchor="w", padx=20)
 
-        self.lbl(b, "Jak jste se o nás dozvěděli?", 10).pack(anchor="w", padx=20, pady=(8, 0))
-        cb = ttk.Combobox(b, textvariable=self.how_v, state="readonly", width=44, values=[
-            "Zjevilo se mi to ve snu", "Řekl mi to holub", "Z reklamy, kterou jsem neviděl",
-            "Z inzerátu na sloupu", "Nevím, prostě jsem tady"])
-        cb.pack(anchor="w", padx=20)
+        
 
         self.lbl(b, "Opište přesně kontrolní kód (rozlišují se velká a malá písmena):", 10).pack(
             anchor="w", padx=20, pady=(8, 0))
         tk.Label(b, text="   ".join(self.code), font=("Courier", 20, "bold overstrike"),
                  bg="#000000", fg="#33ff33").pack(anchor="w", padx=20, pady=2)
-        tk.Entry(b, textvariable=self.code_v, width=14, bg="#ffffaa").pack(anchor="w", padx=20)
+        tk.Entry(b, textvariable=self.code_v, width=14, bg="#ffc654").pack(anchor="w", padx=20)
 
         row = tk.Frame(b, bg=self.bg)
         row.pack(anchor="w", padx=20, pady=10)
-        tk.Button(row, text="Vybrat složku (povinné)", bg="#ff9999", font=(FONT_NAME, 9, "bold"),
+        tk.Button(row, text="Vybrat složku (povinné)", bg="#ffc654", font=(FONT_NAME, 9, "bold"),
                   command=self.pick_dir).pack(side="left")
         self.dest_lbl = self.lbl(row, "  zatím nevybráno", 9, wraplength=380)
         self.dest_lbl.pack(side="left")
@@ -433,7 +414,7 @@ class Installer(tk.Tk):
             v.trace_add("write", lambda *_: self.validate_register())
 
     def pick_dir(self):
-        d = filedialog.askdirectory(title="Kam nainstalovat VLCR Prohlížeč?")
+        d = filedialog.askdirectory(title="Kam nainstalovat VLČR Prohlížeč?")
         if d:
             self.s["dest"] = d
             self.dest_choice = d
@@ -441,8 +422,7 @@ class Installer(tk.Tk):
             self.validate_register()
 
     def validate_register(self):
-        ok = (len(self.name_v.get().strip()) >= 2 and self.how_v.get()
-              and self.code_v.get() == self.code and self.s["dest"])
+        ok = (len(self.name_v.get().strip()) >= 2 and self.code_v.get() == self.code and self.s["dest"])
         self.set_next(bool(ok))
 
     # ---------- krok 4: stahování ----------
@@ -450,8 +430,7 @@ class Installer(tk.Tk):
         b = self.body
         self.s.update(t=0.0, done=False, error=None)
         self.back_btn.configure(state="disabled")
-        self.lbl(b, "Stahuji druhou aplikaci: VLCR Prohlížeč™ (zdarma*)", 12).pack(pady=(6, 4))
-        self.status = self.lbl(b, "Navazuji spojení s vesmírem…", 10, wraplength=620)
+        self.lbl(b, "Stahuji aplikaci: VLČR Prohlížeč™ (zdarma*)", 12).pack(pady=(6, 4))
         self.status.pack(pady=4)
         self.queue_lbl = self.lbl(b, "", 12)
         self.queue_lbl.pack(pady=4)
@@ -461,7 +440,7 @@ class Installer(tk.Tk):
         self.pct_lbl.pack()
         self.eta_lbl = self.lbl(b, ETA_MSGS[0], 10)
         self.eta_lbl.pack(pady=6)
-        self.lbl(b, "* Za zdarma se považuje to, co nestojí peníze. Čas stojí.", 8).pack(side="bottom")
+        self.lbl(b, "* Za zdarma se považuje to, co nestojí peníze.", 8).pack(side="bottom")
         self.later(100, self.tick_download)
 
     def tick_download(self):
@@ -472,7 +451,7 @@ class Installer(tk.Tk):
         if t < QUEUE_END:
             pos = max(1, 23 - int(t / QUEUE_END * 22))
             self.queue_lbl.configure(text="Jste %d. ve frontě na stahování" % pos)
-            self.status.configure(text="Čekáte ve frontě. Nezavírejte okno ani nedýchejte příliš hlasitě.")
+            self.status.configure(text="Čekáte ve frontě. Nezavírejte okno.")
         elif t < BAR_END:
             x = (t - QUEUE_END) / (BAR_END - QUEUE_END)
             pct = max(0.0, 99 * x - 12 * max(0.0, math.sin(t * 0.8)) * (1 - x))
@@ -512,7 +491,7 @@ class Installer(tk.Tk):
             self.lbl(b, "Instalace se nezdařila:\n%s" % r["error"], 11, wraplength=620).pack(pady=20)
             return
         target, launcher, sample = r["result"]
-        self.lbl(b, "Instalace je dokončena! (A to jste si mysleli, že nikdy.)", 13,
+        self.lbl(b, "Instalace je dokončena!", 13,
                  wraplength=620).pack(pady=(10, 6))
         self.lbl(b, "VLCR Prohlížeč je ve složce:\n%s" % target, 10, wraplength=620).pack(pady=4)
         self.lbl(b, "Ukázkový soubor ukazka.vlcr najdete ve stejné složce.\n"
@@ -522,7 +501,7 @@ class Installer(tk.Tk):
         tk.Checkbutton(b, text="Spustit VLCR Prohlížeč po dokončení", variable=self.launch_v,
                        bg=self.bg, activebackground=self.bg, font=(FONT_NAME, 10, "bold")).pack(pady=(14, 2))
         self.toolbar_v = tk.IntVar(value=1)
-        tk.Checkbutton(b, text="Nainstalovat zbytečný panel nástrojů (jen vtip, nic se nestane)",
+        tk.Checkbutton(b, text="Nainstalovat zbytečný panel nástrojů",
                        variable=self.toolbar_v, bg=self.bg, activebackground=self.bg,
                        font=(FONT_NAME, 9, "bold")).pack()
 
