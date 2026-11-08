@@ -73,7 +73,7 @@ def terms_text():
     parts = []
     for i in range(1, 61):
         parts.append("Článek %d.  %s" % (i, " ".join(rnd.choice(CLAUSES) for _ in range(3))))
-    return "\n\n".join(parts) + "\n\nKonec podmínek. (Ale ne konec vašeho trápení.)"
+    return "\n\n".join(parts) + "\n\nKonec podmínek."
 
 
 def do_install(dest_root):
@@ -431,6 +431,7 @@ class Installer(tk.Tk):
         self.s.update(t=0.0, done=False, error=None)
         self.back_btn.configure(state="disabled")
         self.lbl(b, "Stahuji aplikaci: VLČR Prohlížeč™ (zdarma*)", 12).pack(pady=(6, 4))
+        self.status = self.lbl(b, "Načítání...", 10, wraplength=620)
         self.status.pack(pady=4)
         self.queue_lbl = self.lbl(b, "", 12)
         self.queue_lbl.pack(pady=4)
